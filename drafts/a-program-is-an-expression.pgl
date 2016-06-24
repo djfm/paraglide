@@ -1,0 +1,7 @@
+let {
+  x: 0.5 + 0.5
+  y: (pow 2 2)
+} in let {
+  z: x + y
+} in
+    z * z
