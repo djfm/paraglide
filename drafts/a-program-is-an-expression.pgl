@@ -1,7 +1,10 @@
 let {
   x: 0.5 + 0.5
-  y: (pow 2 2)
+  square: x => x * x
+  y: (square 2)
 } in let {
-  z: x + y
+ /* some comment */
+  z: x + y,
+  lalala: 'som\' string'
 } in
     z * z
