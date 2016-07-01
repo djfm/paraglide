@@ -69,30 +69,34 @@ describe('The Parser', () => {
     describe('groupStage', () => {
       const checkNodeStructures = checkNodeStructuresAfter(groupStage);
 
-      checkNodeStructures('1 + 2', ['leftAssociativeBinaryOperator[number, number]']);
+      checkNodeStructures('1 + 2', ['leftAssocBinOp[number, number]']);
       checkNodeStructures('1 + 2 + 3',
-        ['leftAssociativeBinaryOperator[leftAssociativeBinaryOperator[number, number], number]']
+        ['leftAssocBinOp[leftAssocBinOp[number, number], number]']
       );
     });
   });
 
   context('language domain', () => {
+    /* eslint-disable no-use-before-define */
     examples.forEach((folder, folderName) =>
       context(folderName, () => folder.forEach(
         ({ input, expected }, name) => it(`should parse a ${name}`, () => {
-          const simplifyStructure = node => {
-            if (node.value instanceof Array) {
-              return {
-                type: node.type,
-                value: node.value.map(simplifyStructure),
-              };
-            }
-            const { type, value } = node;
-            return { type, value };
-          };
+          const pluck = ({ type, value, operator }) => (
+            operator ? { type, value, operator: simplifyStructure(operator) } : { type, value }
+          );
+          const simplifyStructure = node =>
+            pluck(
+              node.value instanceof Array ?
+                Object.assign({}, node, {
+                  value: node.value.map(simplifyStructure),
+                }) :
+                node
+             )
+          ;
           simplifyStructure(parse(input)).should.deep.equal(expected.ast);
         })
       ))
+      /* eslint-enable no-use-before-define */
     );
   });
 });

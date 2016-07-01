@@ -1,5 +1,9 @@
 exports.ast = {
-  type: 'leftAssociativeBinaryOperator',
+  type: 'leftAssocBinOp',
+  operator: {
+    type: 'operator',
+    value: '+',
+  },
   value: [{
     type: ['number'],
     value: 1,
