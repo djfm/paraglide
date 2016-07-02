@@ -1,10 +1,9 @@
 exports.ast = {
-  type: 'leftAssocBinOp',
-  operator: {
+  type: 'application',
+  value: [{
     type: 'operator',
     value: '+',
-  },
-  value: [{
+  }, {
     type: ['number'],
     value: 1,
   }, {

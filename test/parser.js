@@ -69,9 +69,9 @@ describe('The Parser', () => {
     describe('groupStage', () => {
       const checkNodeStructures = checkNodeStructuresAfter(groupStage);
 
-      checkNodeStructures('1 + 2', ['leftAssocBinOp[number, number]']);
+      checkNodeStructures('1 + 2', ['application[operator, number, number]']);
       checkNodeStructures('1 + 2 + 3',
-        ['leftAssocBinOp[leftAssocBinOp[number, number], number]']
+        ['application[operator, application[operator, number, number], number]']
       );
     });
   });
