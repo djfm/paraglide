@@ -1,6 +1,7 @@
 let {
   x: 0.5 + 0.5
-  square: x => x * x
+  pow: x n => if n < 1 then 1 else n * (pow x n - 1) 
+  square: x => (pow x 2)
   y: (square 2)
 } in let {
  /* some comment */
