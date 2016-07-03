@@ -1,4 +1,5 @@
 const { examples } = require('./harness/examples');
+const { deepMap } = require ('../lib/functional');
 
 const {
   groupNodes,
@@ -66,7 +67,7 @@ describe('The Parser', () => {
       checkNodeStructures('(ab cd)', ['parenGroup[sourceString, sourceString]']);
     });
 
-    describe('groupStage', () => {
+    xdescribe('groupStage', () => {
       const checkNodeStructures = checkNodeStructuresAfter(groupStage);
 
       checkNodeStructures('1 + 2', ['application[operator, number, number]']);
@@ -77,26 +78,22 @@ describe('The Parser', () => {
   });
 
   context('language domain', () => {
-    /* eslint-disable no-use-before-define */
     examples.forEach((folder, folderName) =>
       context(folderName, () => folder.forEach(
         ({ input, expected }, name) => it(`should parse a ${name}`, () => {
-          const pluck = ({ type, value, operator }) => (
-            operator ? { type, value, operator: simplifyStructure(operator) } : { type, value }
-          );
           const simplifyStructure = node =>
-            pluck(
-              node.value instanceof Array ?
-                Object.assign({}, node, {
-                  value: node.value.map(simplifyStructure),
-                }) :
-                node
-             )
+            deepMap(node, value => {
+              if (typeof value === 'object' && 'children' in value) {
+                const valueCopy = Object.assign({}, value);
+                delete valueCopy.children;
+                return valueCopy;
+              }
+              return value;
+            })
           ;
           simplifyStructure(parse(input)).should.deep.equal(expected.ast);
         })
       ))
-      /* eslint-enable no-use-before-define */
     );
   });
 });
