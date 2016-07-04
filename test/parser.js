@@ -67,7 +67,7 @@ describe('The Parser', () => {
       checkNodeStructures('(ab cd)', ['parenGroup[sourceString, sourceString]']);
     });
 
-    xdescribe('groupStage', () => {
+    describe('groupStage', () => {
       const checkNodeStructures = checkNodeStructuresAfter(groupStage);
 
       checkNodeStructures('1 + 2', ['application[operator, number, number]']);
