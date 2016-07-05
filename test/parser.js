@@ -65,6 +65,7 @@ describe('The Parser', () => {
       checkNodeStructures('(a)', ['parenGroup[sourceString]']);
       checkNodeStructures('(abc)', ['parenGroup[sourceString]']);
       checkNodeStructures('(ab cd)', ['parenGroup[sourceString, sourceString]']);
+      checkNodeStructures('(f (b c))', ['parenGroup[sourceString, parenGroup[sourceString, sourceString]]']);
     });
 
     describe('groupStage', () => {
