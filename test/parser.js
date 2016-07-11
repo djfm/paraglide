@@ -1,8 +1,9 @@
 const { examples } = require('./harness/examples');
-const { deepMap } = require ('../lib/functional');
+const { deepMap } = require('../lib/functional');
 
 const {
   groupNodes,
+  groupBetween,
   parse,
   composeParsers,
   mergeAdjacent,
@@ -53,9 +54,37 @@ describe('The Parser', () => {
       )
     ;
 
+    describe('groupBetween "(" and ")"', () => {
+      const checkNodeStructures = checkNodeStructuresAfter(
+        groupBetween(/^\($/, /^\)$/, 'parenGroup')
+      );
+
+      checkNodeStructures('a', ['sourceString']);
+      checkNodeStructures('ab', ['sourceString', 'sourceString']);
+      checkNodeStructures('()', ['parenGroup[]']);
+      checkNodeStructures('(a)', ['parenGroup[sourceString]']);
+      checkNodeStructures('(ab)', ['parenGroup[sourceString, sourceString]']);
+      checkNodeStructures('(())', ['parenGroup[parenGroup[]]']);
+      checkNodeStructures('((a))', ['parenGroup[parenGroup[sourceString]]']);
+      checkNodeStructures('((ab))', ['parenGroup[parenGroup[sourceString, sourceString]]']);
+      checkNodeStructures('(()())', ['parenGroup[parenGroup[], parenGroup[]]']);
+      checkNodeStructures(
+        '((a)(b))',
+        ['parenGroup[parenGroup[sourceString], parenGroup[sourceString]]']
+      );
+      checkNodeStructures(
+        '((a)((b)))',
+        ['parenGroup[parenGroup[sourceString], parenGroup[parenGroup[sourceString]]]']
+      );
+      checkNodeStructures(
+        '((a)(b)(c))',
+        ['parenGroup[parenGroup[sourceString], parenGroup[sourceString], parenGroup[sourceString]]']
+      );
+      checkNodeStructures('a(b)', ['sourceString', 'parenGroup[sourceString]']);
+    });
+
     describe('groupNodes', () => {
       const checkNodeStructures = checkNodeStructuresAfter(groupNodes);
-
       checkNodeStructures('1', ['number']);
       checkNodeStructures('abc', ['sourceString']);
       checkNodeStructures('1 + 2', ['number', 'operator', 'number']);
@@ -65,7 +94,9 @@ describe('The Parser', () => {
       checkNodeStructures('(a)', ['parenGroup[sourceString]']);
       checkNodeStructures('(abc)', ['parenGroup[sourceString]']);
       checkNodeStructures('(ab cd)', ['parenGroup[sourceString, sourceString]']);
-      checkNodeStructures('(f (b c))', ['parenGroup[sourceString, parenGroup[sourceString, sourceString]]']);
+      checkNodeStructures('(f(b))',
+        ['parenGroup[sourceString, parenGroup[sourceString]]']
+      );
     });
 
     describe('groupStage', () => {
