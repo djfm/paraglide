@@ -6,19 +6,19 @@ const {
   mergeAdjacent,
   groupBetween,
   parse,
-  composeParsers,
+  compose,
   groupStage,
   stringToNodeList,
 } = require('../lib/parser');
 
 describe('The Parser', () => {
   context('internals', () => {
-    describe('composeParsers', () => {
+    describe('compose', () => {
       it('should successively apply parsers', () => {
         const a = () => [1, 2];
         const b = nodes => nodes.splice(1);
         const c = nodes => nodes.concat(3);
-        composeParsers(a, b, c)().should.deep.equal([2, 3]);
+        compose(a, b, c)().should.deep.equal([2, 3]);
       });
     });
 
