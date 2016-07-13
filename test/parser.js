@@ -3,10 +3,10 @@ const { deepMap } = require('../lib/functional');
 
 const {
   groupNodes,
+  mergeAdjacent,
   groupBetween,
   parse,
   composeParsers,
-  mergeAdjacent,
   groupStage,
   stringToNodeList,
 } = require('../lib/parser');
@@ -22,24 +22,6 @@ describe('The Parser', () => {
       });
     });
 
-    describe('mergeAdjacent', () => {
-      it('should merge adjacent nodes of the same type', () => {
-        const m = {
-          type: 't',
-          value: 'a',
-        };
-        const n = {
-          type: 't',
-          value: 'b',
-        };
-        mergeAdjacent('t')([m, n]).should.deep.equal([{
-          type: 't',
-          value: 'ab',
-          children: [m, n],
-        }]);
-      });
-    });
-
     const structureOf = nodeList => nodeList.map(
       ({ type, value }) =>
         ((value instanceof Array) ?
@@ -47,12 +29,36 @@ describe('The Parser', () => {
           type)
     );
 
-    const checkNodeStructuresAfter = method => (sourceString, expectedNodeTypes) =>
-      it(`should detect "${expectedNodeTypes.join(', ')}" when parsing "${sourceString}"`,
-        () => structureOf(method(stringToNodeList(sourceString)))
-                .should.deep.equal(expectedNodeTypes)
-      )
+    const checkNodeStructuresAfter = (parser, toNodeList = stringToNodeList) =>
+      (sourceString, expectedNodeTypes) =>
+        it(`should detect "${expectedNodeTypes.join(', ')}" when parsing "${sourceString}"`,
+          () => {
+            const nodes = parser(toNodeList(sourceString));
+            structureOf(nodes).should.deep.equal(expectedNodeTypes);
+          }
+        )
     ;
+
+    describe('mergeAdjacent nodes of the "g" type', () => {
+      const checkNodeStructures = checkNodeStructuresAfter(
+        mergeAdjacent('g'),
+        str => stringToNodeList(str).map(
+          node => Object.assign({}, node, {
+            type: node.value,
+          })
+        )
+      );
+
+      checkNodeStructures('a', ['a']);
+      checkNodeStructures('ab', ['a', 'b']);
+      checkNodeStructures('abc', ['a', 'b', 'c']);
+      checkNodeStructures('g', ['g']);
+      checkNodeStructures('gg', ['g']);
+      checkNodeStructures('ggg', ['g']);
+      checkNodeStructures('ag', ['a', 'g']);
+      checkNodeStructures('aggggg', ['a', 'g']);
+      checkNodeStructures('agggggbc', ['a', 'g', 'b', 'c']);
+    });
 
     describe('groupBetween "(" and ")"', () => {
       const checkNodeStructures = checkNodeStructuresAfter(
