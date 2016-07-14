@@ -34,7 +34,12 @@ describe('The Parser', () => {
         it(`should detect "${expectedNodeTypes.join(', ')}" when parsing "${sourceString}"`,
           () => {
             const nodes = parser(toNodeList(sourceString));
-            structureOf(nodes).should.deep.equal(expectedNodeTypes);
+            try {
+              structureOf(nodes).should.deep.equal(expectedNodeTypes);
+            } catch (e) {
+              console.log('Oops', JSON.stringify(nodes, null, 2));
+              throw e;
+            }
           }
         )
     ;
