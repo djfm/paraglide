@@ -74,9 +74,23 @@ describe('Parser Generators', () => {
       }
     });
 
-    xit('should group nodes between parens', () =>
+    it('should group nodes between parens', () =>
       makeParser()('(a)').should.deep.equal({
         recognized: [['(', 'a', ')']],
+        remaining: [],
+      })
+    );
+
+    it('should group multiple nodes between parens', () =>
+      makeParser()('(ab)').should.deep.equal({
+        recognized: [['(', 'a', 'b', ')']],
+        remaining: [],
+      })
+    );
+
+    it('should group nodes deeply', () =>
+      makeParser()('((a))').should.deep.equal({
+        recognized: [['(', ['(', 'a', ')'], ')']],
         remaining: [],
       })
     );

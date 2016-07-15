@@ -17,5 +17,14 @@ describe('Parser Transformers', () => {
         remaining: [],
       })
     );
+    it(
+      'is ignores the transform if thee parser did not match anything',
+      () => applyToRecognized(
+        ([a]) => [a.toUpperCase()]
+      )(parseChar('a'))('b').should.deep.equal({
+        recognized: [],
+        remaining: ['b'],
+      })
+    );
   });
 });
