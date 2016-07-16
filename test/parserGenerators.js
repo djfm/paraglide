@@ -94,5 +94,19 @@ describe('Parser Generators', () => {
         remaining: [],
       })
     );
+
+    it('should group nodes even preceded by a non group context',
+      () => makeParser()('b(a)').should.deep.equal({
+        recognized: ['b', ['(', 'a', ')']],
+        remaining: [],
+      })
+    );
+
+    it('should group nodes even followed by a non group context',
+      () => makeParser()('(a)b').should.deep.equal({
+        recognized: [['(', 'a', ')'], 'b'],
+        remaining: [],
+      })
+    );
   });
 });
