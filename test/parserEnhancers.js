@@ -5,11 +5,7 @@ const {
 const {
   zeroOrMore,
   sequence,
-  first,
-  allowFailure,
 } = require('../lib/parsing/parserEnhancers');
-
-const ParseError = require('../lib/parsing/ParseError');
 
 describe('Parser Enhancers', () => {
   describe('zeroOrMore is like "*" in a regular expression', () => {
@@ -21,6 +17,7 @@ describe('Parser Enhancers', () => {
         remaining: ['b', 'b'],
       })
     );
+
     it('should concatenate what the parser recognized and leave the rest', () =>
       zeroOrMore(
         parseChar('a')
@@ -47,46 +44,18 @@ describe('Parser Enhancers', () => {
         remaining: ['c'],
       })
     );
-  });
 
-  describe('allowFailure', () => {
-    it('skips a parser that throws a ParseError', () =>
-      allowFailure(
-        () => { throw new ParseError(); }
-      )('ab').should.deep.equal({
-        recognized: [],
-        remaining: ['a', 'b'],
-      })
-    );
-  });
-
-  describe('first', () => {
-    const recognizeA = parseChar('a');
-    const recognizeAB = sequence(parseChar('a'), parseChar('b'));
-
-    it('tries all parsers in order and uses the first to match', () => {
-      first(
-        recognizeA,
-        recognizeAB
-      )('ab').should.deep.equal({
+    it('should execute all parsers while there are nodes to parse ' +
+    ', whether or not they recognize stuff', () => {
+      const shouldNotRecognize = parseChar('b');
+      const shouldRecognize = parseChar('a');
+      sequence(
+        shouldNotRecognize,
+        shouldRecognize
+      )('a').should.deep.equal({
         recognized: ['a'],
-        remaining: ['b'],
-      });
-
-      first(
-        recognizeAB,
-        recognizeA
-      )('ab').should.deep.equal({
-        recognized: ['a', 'b'],
         remaining: [],
       });
     });
-
-    it('doesn\'t really care about failure', () =>
-      first(recognizeA)('b').should.deep.equal({
-        recognized: [],
-        remaining: ['b'],
-      })
-    );
   });
 });

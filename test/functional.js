@@ -3,7 +3,10 @@ const {
   empty,
   not,
   lazyly,
+  liftLeftAssociativeBinary,
 } = require('../lib/functional');
+
+const chai = require('chai');
 
 describe('The functional utility library', () => {
   describe('equals returns a predicate that checks strict equality', () => {
@@ -47,17 +50,29 @@ describe('The functional utility library', () => {
     it(
       'decorates a function that returns a function so that it is called as needed',
       () => {
-        let wasCalled = false;
-
-        const dontCallMeNow = x => {
-          wasCalled = true;
-          return y => x * y;
-        };
-
+        const dontCallMeNow = chai.spy(x => y => x * y);
         const lazyVersion = lazyly(dontCallMeNow)(2);
-        wasCalled.should.be.false; // eslint-disable-line
+        dontCallMeNow.should.not.have.been.called();
         lazyVersion(3).should.equal(6);
       }
+    );
+  });
+
+  describe('liftLeftAssociativeBinary', () => {
+    const sum = (a, b) => a + b;
+
+    it(
+      'turns a function of type (a, a) => a into a function of type (...a) => a' +
+      ', associating to the left',
+      () => liftLeftAssociativeBinary(sum)(1, 2, 3).should.equal(6)
+    );
+
+    it('should complain if called with 1 argument only',
+      () => chai.expect(() => liftLeftAssociativeBinary(sum)(1)).to.throw()
+    );
+
+    it('should complain if called with no arguments at all',
+      () => chai.expect(() => liftLeftAssociativeBinary(sum)()).to.throw()
     );
   });
 });
