@@ -13,5 +13,8 @@
     "before": true,
     "after": true,
     "context": true
+  },
+  "rules": {
+    "no-use-before-define": ["error", { "functions": false, "classes": true }]
   }
 }

@@ -61,6 +61,8 @@ describe('Parser Generators', () => {
     ;
 
     it('should not cause a recursion when called', () => {
+      // Yeah, JS not being lazyly evaluated,
+      // you cannot do *everything* like in Haskell
       try {
         makeParser();
       } catch (e) {
@@ -112,6 +114,19 @@ describe('Parser Generators', () => {
     it('should group nodes even followed by a non group context',
       () => makeParser()('(a)b').should.deep.equal({
         recognized: [['(', 'a', ')'], 'b'],
+        remaining: [],
+      })
+    );
+
+    it('should fail if a group is lacking a closing node',
+      () => chai.expect(
+        () => makeParser()('(a')
+      ).to.throw(ParseError)
+    );
+
+    it('doesn\'t fail if a meaningless closing node is encountered',
+      () => makeParser()(')a').should.deep.equal({
+        recognized: [')', 'a'],
         remaining: [],
       })
     );

@@ -4,7 +4,7 @@
   "description": "A would-be JS interpreted language for easy async programming with some kind of time travel.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require test/harness",
+    "test": "mocha --require test/harness --bail",
     "test:watch": "npm run test -- -w"
   },
   "author": "François-Marie de Jouvencel <fm.de.jouvencel@gmail.com>",
