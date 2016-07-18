@@ -129,5 +129,12 @@ describe('Parser Generators', () => {
         () => makeParser()(')a')
       ).to.throw(ParseError)
     );
+
+    it('should recognize multiple groups',
+      () => makeParser()('(a)(b)').should.deep.equal({
+        recognized: [['(', 'a', ')'], ['(', 'b', ')']],
+        remaining: [],
+      })
+    );
   });
 });
