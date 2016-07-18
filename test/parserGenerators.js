@@ -124,11 +124,10 @@ describe('Parser Generators', () => {
       ).to.throw(ParseError)
     );
 
-    it('doesn\'t fail if a meaningless closing node is encountered',
-      () => makeParser()(')a').should.deep.equal({
-        recognized: [')', 'a'],
-        remaining: [],
-      })
+    it('should fail if a closing node is found without a corresponding opening node',
+      () => chai.expect(
+        () => makeParser()(')a')
+      ).to.throw(ParseError)
     );
   });
 });

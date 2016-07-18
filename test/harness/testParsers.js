@@ -14,7 +14,7 @@ const parseChar = c =>
     }
     return {
       recognized: [],
-      remaining: nodeList,
+      remaining: [...nodeList],
     };
   }
 ;
