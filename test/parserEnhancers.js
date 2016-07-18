@@ -13,8 +13,8 @@ const {
 const ParseError = require('../lib/parsing/ParseError');
 
 describe('Parser Enhancers', () => {
-  describe('zeroOrMore is like "*" in a regular expression', () => {
-    it('should not recognize anything if the parser doesn\'t', () =>
+  describe('"zeroOrMore" is like "*" in a regular expression', () => {
+    it('does not recognize anything if the parser doesn\'t', () =>
       zeroOrMore(
         parseChar('a')
       )('bb').should.deep.equal({
@@ -23,7 +23,7 @@ describe('Parser Enhancers', () => {
       })
     );
 
-    it('should concatenate what the parser recognized and leave the rest', () =>
+    it('concatenates what the parser recognized and leaves the rest', () =>
       zeroOrMore(
         parseChar('a')
       )('aab').should.deep.equal({
@@ -33,9 +33,9 @@ describe('Parser Enhancers', () => {
     );
   });
 
-  describe('sequence applies parsers one after the other to the input', () => {
+  describe('"sequence" applies parsers one after the other to the input', () => {
     it(
-      'should recognize the "ab" sequence using a parser for "a" and a parser for "b"',
+      'recognizes the "ab" sequence using a parser for "a" and a parser for "b"',
       () => sequence(parseChar('a'), parseChar('b'))('ab').should.deep.equal({
         recognized: ['a', 'b'],
         remaining: [],
@@ -43,14 +43,14 @@ describe('Parser Enhancers', () => {
     );
 
     it(
-      'should return what the last parser did not recognize',
+      'returns what the last parser did not recognize',
       () => sequence(parseChar('a'), parseChar('b'))('abc').should.deep.equal({
         recognized: ['a', 'b'],
         remaining: ['c'],
       })
     );
 
-    it('should execute all parsers while there are nodes to parse ' +
+    it('executes all parsers while there are nodes to parse ' +
     ', whether or not they recognize stuff', () => {
       const shouldNotRecognize = parseChar('b');
       const shouldRecognize = parseChar('a');
@@ -79,7 +79,7 @@ describe('Parser Enhancers', () => {
       })
     );
 
-    it('doesn\'t recognize anything if no parser matched',
+    it('does not recognize anything if no parser matched',
       () => first(parseChar('a'), parseChar('b'))('xy').should.deep.equal({
         recognized: [],
         remaining: ['x', 'y'],

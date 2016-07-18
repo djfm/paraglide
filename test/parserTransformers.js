@@ -4,11 +4,10 @@ const {
 
 const {
   applyToRecognized,
-  ifNextNodeMatches,
 } = require('../lib/parsing/parserTransformers');
 
 describe('Parser Transformers', () => {
-  describe('applyToRecognized', () => {
+  describe('"applyToRecognized"', () => {
     it(
       'replaces what a parser would normally have returned with something else',
       () => applyToRecognized(
@@ -20,7 +19,7 @@ describe('Parser Transformers', () => {
     );
 
     it(
-      'is ignores the transform if thee parser did not match anything',
+      'ignores the transform if the parser did not match',
       () => applyToRecognized(
         ([a]) => [a.toUpperCase()]
       )(parseChar('a'))('b').should.deep.equal({
