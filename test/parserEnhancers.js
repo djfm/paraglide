@@ -50,8 +50,7 @@ describe('Parser Enhancers', () => {
       })
     );
 
-    it('executes all parsers while there are nodes to parse ' +
-    ', whether or not they recognize stuff', () => {
+    it('executes all parsers regardless of what is recognized', () => {
       const shouldNotRecognize = parseChar('b');
       const shouldRecognize = parseChar('a');
       sequence(
@@ -61,6 +60,23 @@ describe('Parser Enhancers', () => {
         recognized: ['a'],
         remaining: [],
       });
+    });
+
+    it('executes all parsers regardless of whether there is input left', () => {
+      const callMe = chai.spy(nodeList => ({
+        recognized: [],
+        remaining: [...nodeList],
+      }));
+
+      sequence(
+        parseChar('a'),
+        callMe
+      )('a').should.deep.equal({
+        recognized: ['a'],
+        remaining: [],
+      });
+
+      callMe.should.have.been.called();
     });
   });
 
