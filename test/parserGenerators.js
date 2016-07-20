@@ -136,5 +136,33 @@ describe('Parser Generators', () => {
         remaining: [],
       })
     );
+
+    describe('recognizes different types of groups', () => {
+      const groupBraces = groupBetween(
+        equals('{'),
+        equals('}'),
+        recognized => [recognized]
+      );
+
+      const groupEverything = groupBetween(
+        equals('('),
+        equals(')'),
+        recognized => [groupBraces(recognized).recognized]
+      );
+
+      it('braces grouped inside parens', () =>
+        groupEverything('({a})').should.deep.equal({
+          recognized: [['(', ['{', 'a', '}'], ')']],
+          remaining: [],
+        })
+      );
+
+      xit('parens grouped inside braces', () =>
+        groupEverything('{(a)}').should.deep.equal({
+          recognized: [['{', ['(', 'a', ')'], '']],
+          remaining: [],
+        })
+      );
+    });
   });
 });
