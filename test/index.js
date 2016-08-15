@@ -87,6 +87,13 @@ describe('"sequence" accept parsers and returns parsers', () => {
     })
   );
 
+  it('tags the sequence "ab"', () =>
+    runParser(tag('ab')(sequence('ab')))('ab').should.deep.equal({
+      recognized: 'ab',
+      nodes: ['a', 'b'],
+    })
+  );
+
   it('doesn\'t recognize the sequence "ac"', () =>
     abParser('ac').should.deep.equal({
       recognized: false,
@@ -106,4 +113,24 @@ describe('"sequence" accept parsers and returns parsers', () => {
       }],
     })
   );
+
+  it('tags the sequence "ab" in "abc" but leaves the "c"', () =>
+    runParser(tag('ab')(sequence('ab')))('abc').should.deep.equal({
+      recognized: true,
+      nodes: [{
+        recognized: 'ab',
+        nodes: ['a', 'b'],
+      }, {
+        recognized: false,
+        nodes: ['c'],
+      }],
+    })
+  );
+
+  it('tmp', () => {
+    console.log(JSON.stringify(
+      runParser(tag('ab')(sequence('ab')))('abc'),
+      null, 2
+    ));
+  });
 });
