@@ -31,6 +31,18 @@ describe('A char parser for "1"', () => {
       }],
     })
   );
+  it('parses only one digit "1" in "11"', () =>
+    p('11').should.deep.equal({
+      recognized: true,
+      nodes: [{
+        recognized: true,
+        nodes: ['1'],
+      }, {
+        recognized: false,
+        nodes: ['1'],
+      }],
+    })
+  );
 });
 
 describe('A tagged char parser for "1"', () => {
