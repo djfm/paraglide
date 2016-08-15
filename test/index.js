@@ -2,6 +2,7 @@ const {
   charParser,
   tag,
   runParser,
+  sequence,
 } = require('../lib/parsing');
 
 describe('A char parser for "1"', () => {
@@ -69,6 +70,39 @@ describe('A tagged char parser for "1"', () => {
       }, {
         recognized: false,
         nodes: ['a', 'b'],
+      }],
+    })
+  );
+});
+
+describe('"sequence" accept parsers and returns parsers', () => {
+  const abParser = runParser(
+    sequence(charParser('a'), charParser('b'))
+  );
+
+  it('recognizes the sequence "ab"', () =>
+    abParser('ab').should.deep.equal({
+      recognized: true,
+      nodes: ['a', 'b'],
+    })
+  );
+
+  it('doesn\'t recognize the sequence "ac"', () =>
+    abParser('ac').should.deep.equal({
+      recognized: false,
+      nodes: ['a', 'c'],
+    })
+  );
+
+  it('recognizes the sequence "ab" in "abc" but leaves the "c"', () =>
+    abParser('abc').should.deep.equal({
+      recognized: true,
+      nodes: [{
+        recognized: true,
+        nodes: ['a', 'b'],
+      }, {
+        recognized: false,
+        nodes: ['c'],
       }],
     })
   );
