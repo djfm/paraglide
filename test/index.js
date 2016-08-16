@@ -3,7 +3,40 @@ const {
   tag,
   runParser,
   sequence,
+  recognized,
+  unrecognized,
 } = require('../lib/parsing');
+
+describe.only('Internals', () => {
+  describe('"recognized" marks nodes as recognized', () => {
+    it('recognizes "a"', () =>
+      recognized('hello').should.deep.equal({
+        recognized: true,
+        nodes: ['h', 'e', 'l', 'l', 'o'],
+      })
+    );
+    it('doesn\'t change one recognized node - recognized is "true"', () =>
+      recognized({ recognized: true, nodes: ['a'] })
+        .should.deep.equal({
+          recognized: true,
+          nodes: ['a'],
+        })
+    );
+    it('doesn\'t change one recognized node - recognized is truthy', () =>
+      recognized({ recognized: 'a', nodes: ['a'] })
+        .should.deep.equal({
+          recognized: 'a',
+          nodes: ['a'],
+        })
+    );
+  });
+
+  describe('"unrecognized" marks nodes as unrecognized', () => {
+    it('unrecognizes "a"', () =>
+      unrecognized('a').should.equal('a')
+    );
+  });
+});
 
 describe('A char parser for "1"', () => {
   const p = runParser(charParser('1'));
@@ -126,11 +159,4 @@ describe('"sequence" accept parsers and returns parsers', () => {
       }],
     })
   );
-
-  it('tmp', () => {
-    console.log(JSON.stringify(
-      runParser(tag('ab')(sequence('ab')))('abc'),
-      null, 2
-    ));
-  });
 });
