@@ -31,9 +31,48 @@ describe.only('Internals', () => {
     );
   });
 
+  describe('"recognized.withTag(tag)" marks nodes as recognized ' +
+           ' and remembers what was recognized', () => {
+    it('marks "a"', () =>
+      recognized.withTag('A')('a').should.deep.equal({
+        recognized: 'A',
+        nodes: ['a'],
+      })
+    );
+    it('updates one recognized node - recognized is "true"', () =>
+      recognized.withTag('A')({ recognized: true, nodes: ['a'] })
+        .should.deep.equal({
+          recognized: 'A',
+          nodes: ['a'],
+        })
+    );
+    it('doesn\'t change one recognized node - recognized is truthy', () =>
+      recognized.withTag('A')({ recognized: 'a', nodes: ['a'] })
+        .should.deep.equal({
+          recognized: 'A',
+          nodes: [{
+            recognized: 'a',
+            nodes: ['a'],
+          }],
+        })
+    );
+  });
+
   describe('"unrecognized" marks nodes as unrecognized', () => {
     it('unrecognizes "a"', () =>
       unrecognized('a').should.equal('a')
+    );
+
+    it('cannot unrecognize a recognized node', () =>
+      unrecognized(recognized('a')).should.deep.equal(
+        recognized('a')
+      )
+    );
+
+    it('cannot unrecognize a tagged recognized node', () =>
+      unrecognized(recognized.withTag('A')('a')).should.deep.equal(
+        recognized.withTag('A')('a')
+      )
     );
   });
 });
