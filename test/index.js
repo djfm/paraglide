@@ -29,6 +29,13 @@ describe.only('Internals', () => {
           nodes: ['a'],
         })
     );
+    it('recognizes the empty list', () =>
+      recognized()
+        .should.deep.equal({
+          recognized: true,
+          nodes: [],
+        })
+    );
   });
 
   describe('"recognized.withTag(tag)" marks nodes as recognized ' +
