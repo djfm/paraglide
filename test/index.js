@@ -47,11 +47,15 @@ describe('The "sequence" combinator', () => {
     );
 
     it('recognizes the string "ab"', () =>
-      ab('a').should.deep.equal({
+      ab('ab').should.deep.equal({
         tag: { recognized: true },
-        nodes: [
-          { tag: { recognized: true }, nodes: ['a', 'b'] },
-        ],
+        nodes: [{
+          tag: { recognized: true },
+          nodes: ['a'],
+        }, {
+          tag: { recognized: true },
+          nodes: ['b'],
+        }],
       })
     );
   });
