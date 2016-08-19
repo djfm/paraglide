@@ -6,7 +6,7 @@ const {
 describe('A "charParser" for the char "a"', () => {
   const p = charParser('a');
 
-  it('should recognize the string "a"', () =>
+  it('recognizes the string "a"', () =>
     p('a').should.deep.equal({
       tag: { recognized: true },
       nodes: [{
@@ -16,7 +16,7 @@ describe('A "charParser" for the char "a"', () => {
     })
   );
 
-  it('should recognize the string "a" in "ab" and leave the "b"', () =>
+  it('recognizes the string "a" in "ab" and leave the "b"', () =>
     p('ab').should.deep.equal({
       tag: { recognized: true },
       nodes: [{
