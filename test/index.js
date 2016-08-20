@@ -51,10 +51,33 @@ describe('The "sequence" combinator', () => {
         tag: { recognized: true },
         nodes: [{
           tag: { recognized: true },
-          nodes: ['a'],
-        }, {
+          nodes: ['a', 'b'],
+        }],
+      })
+    );
+
+    it('recognizes the string "ab" in "abc" and leaves the "c"', () =>
+      ab('abc').should.deep.equal({
+        tag: { recognized: true },
+        nodes: [{
           tag: { recognized: true },
-          nodes: ['b'],
+          nodes: ['a', 'b'],
+        }, {
+          tag: { recognized: false },
+          nodes: ['c'],
+        }],
+      })
+    );
+
+    it('recognizes the string "ab" in "abcd" and leaves the "cd"', () =>
+      ab('abcd').should.deep.equal({
+        tag: { recognized: true },
+        nodes: [{
+          tag: { recognized: true },
+          nodes: ['a', 'b'],
+        }, {
+          tag: { recognized: false },
+          nodes: ['c', 'd'],
         }],
       })
     );
