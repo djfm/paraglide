@@ -2,6 +2,7 @@ const {
   charParser,
   sequence,
   first,
+  tag,
 } = require('../lib/parsing');
 
 describe('A "charParser" for the char "a"', () => {
@@ -159,4 +160,53 @@ describe('The "first" combinator', () => {
       })
     );
   });
+});
+
+describe('The "tag" combinator', () => {
+  it('tags the recognized output of a parser', () =>
+    tag('a')(charParser('a'))('a').should.deep.equal({
+      tag: { recognized: true },
+      nodes: [
+        { tag: { recognized: true, type: 'a' }, nodes: ['a'] },
+      ],
+    })
+  );
+
+  it('does nothing special if the tagged parser does not recognize', () =>
+    tag('a')(charParser('a'))('b').should.deep.equal({
+      tag: { recognized: false },
+      nodes: [
+        { tag: { recognized: false }, nodes: ['b'] },
+      ],
+    })
+  );
+
+  it('tags the recognized output of a parser and leaves the rest', () =>
+    tag('a')(charParser('a'))('ab').should.deep.equal({
+      tag: { recognized: true },
+      nodes: [
+        { tag: { recognized: true, type: 'a' }, nodes: ['a'] },
+        { tag: { recognized: false }, nodes: ['b'] },
+      ],
+    })
+  );
+
+  it('treats multiple arguments as an implicit sequence of parsers', () =>
+    tag('ab')(charParser('a'), charParser('b'))('ab').should.deep.equal({
+      tag: { recognized: true },
+      nodes: [
+        { tag: { recognized: true, type: 'ab' }, nodes: ['a', 'b'] },
+      ],
+    })
+  );
+
+  it('tags the recognized output of a more complex parser and leaves the rest', () =>
+    tag('ab')(charParser('a'), charParser('b'))('abc').should.deep.equal({
+      tag: { recognized: true },
+      nodes: [
+        { tag: { recognized: true, type: 'ab' }, nodes: ['a', 'b'] },
+        { tag: { recognized: false }, nodes: ['c'] },
+      ],
+    })
+  );
 });
