@@ -3,6 +3,7 @@ const {
   sequence,
   first,
   tag,
+  optional,
 } = require('../lib/parsing');
 
 describe('A "charParser" for the char "a"', () => {
@@ -209,4 +210,27 @@ describe('The "tag" combinator', () => {
       ],
     })
   );
+});
+
+describe('The "optional" combinator', () => {
+  const o = optional(charParser('a'));
+
+  it('does not change the behaviour of a parser that matches', () =>
+    o('a').should.deep.equal({
+      tag: { recognized: true },
+      nodes: [{ tag: { recognized: true }, nodes: ['a'] }],
+    })
+  );
+
+  it('turns failure into success', () => {
+    o('b').should.deep.equal({
+      tag: { recognized: true },
+      nodes: [{ tag: { recognized: false }, nodes: ['b'] }],
+    });
+
+    sequence(o, charParser('b'))('b').should.deep.equal({
+      tag: { recognized: true },
+      nodes: [{ tag: { recognized: true }, nodes: ['b'] }],
+    });
+  });
 });
