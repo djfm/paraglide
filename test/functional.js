@@ -1,11 +1,27 @@
 const {
   map,
   takeWhile,
+  flatten,
 } = require('../lib/functional');
 
 const show = JSON.stringify;
 
 describe('The functional utility functions', () => {
+  describe('"flatten" flattens an iterable of maybe iterables', () => {
+    const examples = [
+      [[1], [1]],
+      [[[1, 2]], [1, 2]],
+      [['abc'], ['a', 'b', 'c']],
+      [[1, 2], [1, 2]],
+      [[1, 2, [3, 'abc', ['d']]], [1, 2, 3, 'a', 'b', 'c', 'd']],
+    ];
+    examples.forEach(([input, output]) =>
+      it(`flatten(${input.map(show).join(', ')}) -> ${show(output)}`, () =>
+        flatten(...input).should.deep.equal(output)
+      )
+    );
+  });
+
   describe('map :: fn -> iterable -> array', () => {
     it('maps a function over a list', () =>
       map(x => x * 2)([1, 2]).should.deep.equal(
