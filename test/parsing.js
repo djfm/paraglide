@@ -252,6 +252,13 @@ describe('The "oneOrMore" combinator', () => {
     })
   );
 
+  it('does not recognize zero instances of what the parser matches', () =>
+    as('b').should.deep.equal({
+      tag: { recognized: false },
+      nodes: [{ tag: { recognized: false }, nodes: ['b'] }],
+    })
+  );
+
   it('recognizes several instances of what the parser matches', () =>
     as('aaa').should.deep.equal({
       tag: { recognized: true },
