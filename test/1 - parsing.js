@@ -96,6 +96,18 @@ describe('The "sequence" combinator', () => {
       })
     );
   });
+
+  describe('a three parsers sequence for "4.2"', () => {
+    const p = sequence('4.2');
+    it('recognizes "4.2"', () =>
+      p('4.2').should.deep.equal({
+        tag: { recognized: true },
+        nodes: [
+          { tag: { recognized: true }, nodes: ['4', '.', '2'] },
+        ],
+      })
+    );
+  });
 });
 
 describe('The "first" combinator', () => {
