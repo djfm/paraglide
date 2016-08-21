@@ -4,6 +4,10 @@ const {
   floating,
 } = require('../lib/grammar');
 
+const {
+  ast,
+} = require('../lib/ast');
+
 describe('The grammar', () => {
   describe('digit is an untyped parser', () => {
     it('recognizes digits in the range 0-9', () =>
@@ -55,6 +59,17 @@ describe('The grammar', () => {
               { tag: { recognized: true, type: 'integer' }, nodes: ['2'] },
             ],
           },
+        ],
+      })
+    );
+
+    it('recognizes "4.2" and extracts AST', () =>
+      ast(floating('4.2')).should.deep.equal({
+        type: 'floating',
+        nodes: [
+          { type: 'integer', nodes: ['4'] },
+          '.',
+          { type: 'integer', nodes: ['2'] },
         ],
       })
     );
