@@ -4,6 +4,7 @@ const {
   first,
   tag,
   optional,
+  oneOrMore,
 } = require('../lib/parsing');
 
 describe('A "charParser" for the char "a"', () => {
@@ -222,6 +223,13 @@ describe('The "optional" combinator', () => {
     })
   );
 
+  it('matches the end of input', () =>
+    o().should.deep.equal({
+      tag: { recognized: true },
+      nodes: [],
+    })
+  );
+
   it('turns failure into success', () => {
     o('b').should.deep.equal({
       tag: { recognized: true },
@@ -233,4 +241,31 @@ describe('The "optional" combinator', () => {
       nodes: [{ tag: { recognized: true }, nodes: ['b'] }],
     });
   });
+});
+
+describe('The "oneOrMore" combinator', () => {
+  const as = oneOrMore(charParser('a'));
+  it('recognizes one instance of what the parser matches', () =>
+    as('a').should.deep.equal({
+      tag: { recognized: true },
+      nodes: [{ tag: { recognized: true }, nodes: ['a'] }],
+    })
+  );
+
+  it('recognizes several instances of what the parser matches', () =>
+    as('aaa').should.deep.equal({
+      tag: { recognized: true },
+      nodes: [{ tag: { recognized: true }, nodes: ['a', 'a', 'a'] }],
+    })
+  );
+
+  it('recognizes instances and leaves the rest', () =>
+    as('aaab').should.deep.equal({
+      tag: { recognized: true },
+      nodes: [
+        { tag: { recognized: true }, nodes: ['a', 'a', 'a'] },
+        { tag: { recognized: false }, nodes: ['b'] },
+      ],
+    })
+  );
 });
